@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Desperdício de Alimentos</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:40px;
+background:#f4f4f4;
+}
+
+h1{
+color:#333;
+}
+
+input,select,button{
+padding:8px;
+margin:5px;
+}
+
+button{
+background:#2ecc71;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+table{
+margin-top:20px;
+border-collapse:collapse;
+width:500px;
+}
+
+td,th{
+border:1px solid #ccc;
+padding:8px;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Registro de Desperdício de Alimentos</h1>
+
+<input id="produto" placeholder="Produto">
+
+<input id="quantidade" type="number" placeholder="Quantidade (kg)">
+
+<select id="motivo">
+<option>Vencido</option>
+<option>Danificado</option>
+<option>Estragado</option>
+</select>
+
+<button onclick="registrar()">Registrar</button>
+
+<h2>Total desperdiçado: <span id="total">0</span> kg</h2>
+
+<table>
+
+<tr>
+<th>Produto</th>
+<th>Quantidade</th>
+<th>Motivo</th>
+</tr>
+
+<tbody id="tabela"></tbody>
+
+</table>
+
+<script>
+
+let registros = JSON.parse(localStorage.getItem("desperdicio")) || []
+
+function salvar(){
+
+localStorage.setItem("desperdicio",JSON.stringify(registros))
+
+}
+
+function calcularTotal(){
+
+let total = 0
+
+registros.forEach(r => {
+
+total += Number(r.quantidade)
+
+})
+
+document.getElementById("total").innerText = total
+
+}
+
+function mostrarTabela(){
+
+let tabela = document.getElementById("tabela")
+
+tabela.innerHTML=""
+
+registros.forEach(r => {
+
+let linha = `
+<tr>
+<td>${r.produto}</td>
+<td>${r.quantidade} kg</td>
+<td>${r.motivo}</td>
+</tr>
+`
+
+tabela.innerHTML += linha
+
+})
+
+}
+
+function registrar(){
+
+let produto = document.getElementById("produto").value
+let quantidade = document.getElementById("quantidade").value
+let motivo = document.getElementById("motivo").value
+
+if(produto=="" || quantidade==""){
+
+alert("Preencha os campos")
+
+return
+
+}
+
+let registro = {
+
+produto:produto,
+quantidade:quantidade,
+motivo:motivo
+
+}
+
+registros.push(registro)
+
+salvar()
+
+mostrarTabela()
+
+calcularTotal()
+
+document.getElementById("produto").value=""
+document.getElementById("quantidade").value=""
+
+}
+
+mostrarTabela()
+
+calcularTotal()
+
+</script>
+
+</body>
+
+</html>
