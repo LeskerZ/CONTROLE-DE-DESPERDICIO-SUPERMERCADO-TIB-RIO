@@ -14,7 +14,14 @@ background:#f4f4f4;
 }
 
 h1{
-color:#333;
+color:#c62828;
+}
+
+header{
+background:#c62828;
+color:white;
+padding:15px;
+border-radius:8px;
 }
 
 input,select,button{
@@ -23,16 +30,27 @@ margin:5px;
 }
 
 button{
-background:#2ecc71;
-color:white;
+background:#fbc02d;
+color:#333;
 border:none;
 cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#fdd835;
 }
 
 table{
 margin-top:20px;
 border-collapse:collapse;
-width:650px;
+width:750px;
+background:white;
+}
+
+th{
+background:#c62828;
+color:white;
 }
 
 td,th{
@@ -41,13 +59,30 @@ padding:8px;
 text-align:center;
 }
 
+.excluir{
+color:red;
+font-weight:bold;
+cursor:pointer;
+}
+
+footer{
+margin-top:40px;
+text-align:center;
+color:#999;
+font-size:14px;
+}
+
 </style>
 
 </head>
 
 <body>
 
+<header>
 <h1>Controle de Desperdício de Alimentos</h1>
+</header>
+
+<br>
 
 <input id="produto" placeholder="Produto">
 
@@ -79,20 +114,23 @@ text-align:center;
 <th>Valor</th>
 <th>Motivo</th>
 <th>Prejuízo</th>
+<th>Excluir</th>
 </tr>
 
 <tbody id="tabela"></tbody>
 
 </table>
 
+<footer>
+produzido por Kauã Castro
+</footer>
+
 <script>
 
 let registros = JSON.parse(localStorage.getItem("desperdicio")) || []
 
 function salvar(){
-
 localStorage.setItem("desperdicio",JSON.stringify(registros))
-
 }
 
 function calcularTotal(){
@@ -100,12 +138,20 @@ function calcularTotal(){
 let total = 0
 
 registros.forEach(r => {
-
 total += Number(r.prejuizo)
-
 })
 
 document.getElementById("total").innerText = total.toFixed(2)
+
+}
+
+function excluirRegistro(index){
+
+registros.splice(index,1)
+
+salvar()
+mostrarTabela()
+calcularTotal()
 
 }
 
@@ -115,7 +161,7 @@ let tabela = document.getElementById("tabela")
 
 tabela.innerHTML=""
 
-registros.forEach(r => {
+registros.forEach((r,index) => {
 
 let linha = `
 <tr>
@@ -125,6 +171,7 @@ let linha = `
 <td>R$ ${r.valor}</td>
 <td>${r.motivo}</td>
 <td>R$ ${r.prejuizo}</td>
+<td class="excluir" onclick="excluirRegistro(${index})">X</td>
 </tr>
 `
 
@@ -178,7 +225,6 @@ document.getElementById("valor").value=""
 }
 
 mostrarTabela()
-
 calcularTotal()
 
 </script>
